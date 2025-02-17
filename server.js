@@ -1,4 +1,6 @@
 require('dotenv').config();
+console.log("MONGO_URI:", process.env.MONGO_URI);
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -8,13 +10,29 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:8080' // Permitir requisições do frontend local
+  origin: 'https://site-cha-casa-nova.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
 
 // Conexão com o MongoDB (removendo opções descontinuadas)
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB conectado!"))
   .catch(err => console.error("Erro ao conectar ao MongoDB:", err));
+
+// Adiciona logs detalhados para depuração
+mongoose.connection.on('connected', () => {
+  console.log('Mongoose conectado com sucesso!');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('Erro de conexão com o MongoDB:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose desconectado.');
+});
+
 
 // Modelo de contribuição
 const Contribution = mongoose.model("Contribution", new mongoose.Schema({
