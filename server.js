@@ -72,4 +72,8 @@ app.get("/api/contributions/:giftId", async (req, res) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 4000;
+app.get("/", (req, res) => {
+  res.send("API de Contribuições para Presentes está rodando!");
+});
+
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
