@@ -9,11 +9,7 @@ const path = require('path');
 const app = express();
 
 app.use(express.json());
-app.use(cors({
-  origin: 'https://site-cha-casa-nova.vercel.app',
-  methods: ['GET', 'POST', 'DELETE', 'PUT'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(cors());
 
 // Conexão com o MongoDB (removendo opções descontinuadas)
 mongoose.connect(process.env.MONGO_URI)
