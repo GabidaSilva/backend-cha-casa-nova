@@ -9,18 +9,13 @@ const path = require('path');
 const app = express();
 
 app.use(express.json());
-app.use(cors({
-  origin: 'https://site-cha-casa-nova.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+app.use(cors());
 
 // Conexão com o MongoDB (removendo opções descontinuadas)
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB conectado!"))
   .catch(err => console.error("Erro ao conectar ao MongoDB:", err));
 
-// Adiciona logs detalhados para depuração
 mongoose.connection.on('connected', () => {
   console.log('Mongoose conectado com sucesso!');
 });
@@ -33,7 +28,6 @@ mongoose.connection.on('disconnected', () => {
   console.log('Mongoose desconectado.');
 });
 
-
 // Modelo de contribuição
 const Contribution = mongoose.model("Contribution", new mongoose.Schema({
   giftId: String,
@@ -43,6 +37,8 @@ const Contribution = mongoose.model("Contribution", new mongoose.Schema({
 
 // Rota para registrar uma contribuição
 app.post("/api/contribute", async (req, res) => {
+  console.log("Requisição recebida:", req.body);
+
   const { giftId, amount } = req.body;
   if (!giftId || !amount || amount < 100) {
     return res.status(400).json({ message: "Dados inválidos. A contribuição mínima é de R$100,00." });
@@ -68,7 +64,7 @@ app.get("/api/contributions/:giftId", async (req, res) => {
   }
 });
 
-// Servir arquivos estáticos (para imagens, CSS, JS)
+// Servir arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 4000;
